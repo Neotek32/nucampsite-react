@@ -8,6 +8,8 @@ const maxLength = len => val => !val || (val.length <= len);
 const minLength = len => val => val && (val.length >= len);
 const isNumber = val => !isNaN(+val);
 const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
+
+
 class Contact extends Component {
     
     constructor(props) {
@@ -29,13 +31,30 @@ class Contact extends Component {
             }
         };
 
+        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+
+    handleBlur = (field) => () => {
+        this.setState({
+            touched: {...this.state.touched, [field]: true}
+        });
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const name = target.name;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
     handleSubmit(values) {
-        console.log("Current state is: " + JSON.stringify(values));
-        alert("Current state is: " + JSON.stringify(values));
         this.props.resetFeedbackForm();
+        this.props.postFeedback(values);
     }
 
     render() {
@@ -67,6 +86,7 @@ class Contact extends Component {
                         <a role="button" className="btn btn-link" href="mailto:fakeemail@fakeemail.co"><i className="fa fa-envelope-o" /> campsites@nucamp.co</a>
                     </div>
                 </div>
+               
                 <div className="row row-content">
                     <div className="col-12">
                         <h2>Send us your Feedback</h2>
